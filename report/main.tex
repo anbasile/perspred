@@ -1,0 +1,139 @@
+ %
+% File ACL2016.tex
+%
+
+\documentclass[11pt]{article}
+\usepackage{acl2016}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\aclfinalcopy 
+
+\usepackage[authoryear]{natbib}
+\usepackage{url}
+
+\title{YOUR LTP PROJECT TITLE}
+\author{ADD YOUR NAME(S) AND STUDENT NUMBER(S)\\
+Length: 4-5 pages (plus unlimited amount of references)}
+\date{}
+
+\begin{document}
+\maketitle
+
+%%% YOUR PART HERE
+\begin{abstract}
+\textcolor{red}{Your abstract here.}
+\end{abstract}
+
+%% IMPORTANT: KEEP ALL SECTIONS (headers)
+%% remove the 'red' text parts
+
+\section{Introduction}
+
+\textcolor{red}{
+\begin{itemize}
+\item Introduce your research (context)
+\item Problem statement and research questions
+\end{itemize}
+} 
+
+\section{Related Work}
+
+\textcolor{red}{Find and discuss 1 paper that is relevant for your own project, discuss it in relation to your own work and cite properly. If you find additional papers, discuss them (optional).}
+
+\textcolor{red}{You can cite a paper by using BibTeX like this~\citep{Culotta:ea:2014}, or the following way if the paper is part of the sentence like~\cite{Culotta:ea:2014}, where the BiBTeX entry is in the \texttt{mybib.bib} file. The proper use of \LaTeX{} and citation using BiBteX is part of this assignment.} 
+
+\section{Model} % this section could also be called differently, if you give your model a name, or want to call it 'Methods' section
+
+\textcolor{red}{Describe the model you build. }
+
+
+\section{Experiments}
+
+\textcolor{red}{Provide a high-level introduction: what are the experiments you are performing?}
+
+\paragraph{Data} % you can also use subsection instead of paragraphs
+
+\textcolor{red}{Describe the data you used in your research. Give an overview of the data collection.}
+
+Table~\ref{tbl:stats} provides a summary of the data used in this study.  \textcolor{red}{Show a couple of examples from your actual dataset}.
+\begin{table}[hbtp]\centering
+\begin{tabular}{|cc|}
+\hline
+A & B \\
+\hline
+A & B \\
+A & B \\
+\hline
+\end{tabular}
+\caption{Overview of the data set. Provide an appropriate caption.}
+\label{tbl:stats}
+\end{table}
+
+
+\paragraph{Pre-processing} \textcolor{red}{Describe how you pre-processed the data. Describe all design choices (e.g., did you tokenize the data?). 
+Provide a link to your git repository with all code to reproduce the results (preferred). Alternatively, upload all code as archive to Nestor.}
+
+\paragraph{Evaluation}
+\textcolor{red}{Describe how you will evaluate your approach, what are the methods you will compare it to. }
+
+\section{Results}
+
+
+\textcolor{red}{Give an overview of your results and discuss them (table(s), confusion matrix..). Did you expect this results? Why (not)? Usually this is the part were you provide tables with results, and in the text you describe the results. 
+For example, ``Table~\ref{tbl:results} summarizes...''. First give a broad overview, then zoom in into details. You could add a separate Discussion section, where you show a couple of examples..etc. Discuss your findings.} 
+
+
+
+\begin{table}[hbtp]\centering
+\begin{tabular}{|ccc|}
+\hline
+A & B & C\\
+\hline
+A & B & C\\
+A & B & C\\
+\hline
+\end{tabular}
+\caption{Add a caption}
+\label{tbl:results}
+\end{table}
+
+\section{Conclusions and Future Work}
+
+\textcolor{red}{Wrap up your report by giving answers to your research question in the beginning. For example, ``This study aimed at ..." You might mention limitations of the current study, or directions for further research here.}
+
+%%END YOUR PART
+
+\section*{\textcolor{red}{Check list}}
+\textcolor{red}{(in your final paper remove this section)}
+\textcolor{red}{
+\begin{itemize}
+\item Make sure your paper is max 4 pages long
+\item If you worked in groups: make sure your paper contains an appendix which states your individual contributions to this project (both to the project itself and the paper writeup)
+\item check that your paper contains an abstract
+\item check that your paper motivates your research and states the research question (in the introduction)
+\item make sure your paper has a related work section were you discuss at least 1 paper that you found relevant to your own work
+\item check that your paper describes the data collection
+\item make sure your paper links to the git repository that contains all scripts to obtain your results
+\item make sure your paper contains describes a proper baseline, your model and the evaluation setup (including evaluation metric/s)
+\item make sure your paper contains a results section, and discusses them (table + text, possible figures)
+\item check proper use of \LaTeX{} and BibTex
+\end{itemize}
+}
+
+\section*{Appendix}
+
+
+\textcolor{red}{ Any additional parts go here, like an overview of who did what (if you worked in a group)}
+
+\bibliographystyle{chicago}
+\bibliography{mybib.bib}
+
+\end{document}
+
+
+

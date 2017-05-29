@@ -1,0 +1,152 @@
+% Created 2017-05-29 lun 12:45
+\documentclass[article,11pt,nofixltx2e]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{acl2016}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[authoryear]{natbib}
+\author{Angelo Basile}
+\date{\textit{[2016-11-19 sab]}}
+\title{reports}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.2.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\section{TEMPLATE}
+\label{sec-1}
+
+\begin{abstract}
+For the weekly reports you might not need this, but it’s good to get used soon to writ- ing proper abstracts to research papers.  Give it a try, and we will provide feedback.
+\end{abstract}
+
+\subsection{Introduction}
+\label{sec-1-1}
+
+The template is structured along the lines of a re- search paper, and you can fill each appropriate sec- tion with the relevant information. The idea is that you get used to using the standard format adopted in research to report on experiments. At times this might feel a little stretched in the context of home- work and the exercises you are asked to complete, but give it a try. Also, don’t get too hung up about what should go where: try make decisions, and we will give you feedback. Finally, for spefific assignments you might want to implement some modifications to the template (for example in case you don’t have a separate test set, or you might want to have a more general “Experiments” sec- tion in case you have to run more than one, and stuff like that). Feel free to do so, as long as you maintain some proper structure which is appropri- ate for a research paper. Additional questions can be answered in the final section.
+\subsection{Related work}
+\label{sec-1-2}
+
+For the reports you probably don’t need this, but in case you want to mention some background or motivate some choices that you made based on the existing literature, this is the place to do it.
+
+\subsection{Data}
+\label{sec-1-3}
+Here you will report on what data you used. How much is it? Where did it come from? Is it annotated? Do you know anything about inter- annotator agreement?
+\subsection{Method/Approach}
+\label{sec-1-4}
+Here you will report on method you chose to run your experiments. Also evaluation methods can go here. Any settings you used also can be described here. Do you have a separate dev set? Do you use cross-validation? What features are you using?
+\subsection{Results}
+\label{sec-1-5}
+Your final results on test data. You can also include here some results on development, of course, but you should keep them clearly separate from results on test data. Results on development are useful to tune your system, so they better go in Method.  But for comparison you might want to report your best dev results also in this section. It can happen that for some assignments you have no separate test set, so this section in case can be merged with the previous one.
+\subsection{Discussion/Conclusion}
+\label{sec-1-6}
+What observations can you glean from the results?  In the context of the course, you can really use this space not only to discuss the actual results with your own observations, but also to add some re- flections on what you had to do, strategies you adopted, what you could do differently, and so on.
+
+\subsection{Answers to additional questions}
+\label{sec-1-7}
+If something doesn’t fit in the above, or if there are additional, more general questions in the assign- ment that are not directly answered in the previous sections, you can use this space for them.
+\section{Personality prediction from tweets: a language independent approach \textasciitilde{} DRAFT}
+\label{sec-2}
+
+\begin{abstract}
+Author profiling is the task of predicting some aspects (e.g., gender, age, personality) of the author of a given text. In this paper we describe a system that predicts the personality of twitter users. We trained a neural network on the TwiSty corpus and we reached a [TODO ADD] x.xx in RMSE score.
+\end{abstract}
+
+\subsection{Introduction}
+\label{sec-2-1}
+
+It has been shown that given a text, it is possible to say a lot about its author: its gender, wheter he or she is old or young, if he is depressed, what is his dominant personality trait. This study focuses on this exact last thing: given some text --- tweets, in this case --- we want to predict the personality of the author.[TODO expand]
+
+Test \cite{DBLP:journals/corr/LiuPN16}.
+
+\subsection{Related Work}
+\label{sec-2-2}
+
+The work of [TODOLIU] shows that neural models can successfully model author personality traits from text. The authors suggest at the end of the paper that "the lack of feature engineering should support language independence". For this work we attempted to replicate the exact same model that [TODO fix][liu et al] built: we wanted to test wether it was possible to use it across languages.
+
+For the baseline: we considered the submissions to the PAN forum [TODO ADD references and footnote] in the last years and we saw that many participants proposed an SVM-based model with a sparse feature representation. Such systems achieved good performances: we decided to use them as a baseline.
+
+\subsection{Model}
+\label{sec-2-3}
+
+Our system consists of a recurrent and compositional neural-network. A first layer builds embeddings at the character level; the output is used to 
+
+\subsection{Experiments}
+\label{sec-2-4}
+\subsubsection{Data}
+\label{sec-2-4-1}
+
+For this task we trained and tested our model on the TwiSty corpus [TODO add reference]. Additionally, we worked on the PAN 2015 dataset in order to compare our results with those reported by [TODOLIU]: Table \ref{tab:sample-dataset} shows a sample of the data.
+
+\begin{table*}[htb]
+\caption{\label{tab:sample-dataset}Sample instances from the PAN 2015 dataset}
+\centering
+\begin{tabular}{rllllrrrrrrl}
+ & author & lang & text & gender & age & ext & sta & agr & con & opn & \\
+\hline
+0 & e5b59ccc- & en & @username @username ay friend, q te fumasteSSS\ldots{} & F & 35-49 & 0.0 & 0.2 & 0.2 & 0.3 & 0.2 & \\
+1 & ed970294- & en & “@username: @username "you can't have your cak\ldots{} & M & 18-24 & 0.1 & 0.2 & 0.2 & 0.0 & 0.1 & \\
+2 & 4b05f4e0- & en & I should probably go to bed considering I have\ldots{} & F & 18-24 & 0.5 & 0.0 & 0.3 & 0.3 & 0.4 & \\
+3 & de7f0515- & en & @username the sameee\n@username Great!!\nRT @u\ldots{} & M & 25-34 & 0.2 & -0.1 & 0.2 & 0.0 & 0.1 & \\
+4 & a71c93ed- & en & On my very last Nerve!\nI am nothing and I hav\ldots{} & F & 25-34 & 0.2 & 0.0 & 0.0 & 0.3 & 0.4 & \\
+\end{tabular}
+\end{table*}
+
+\subsubsection{Pre-processing}
+\label{sec-2-4-2}
+
+For the baseline system we used the default pre-processor included in the scikit-learn tf-idf vectorizer, which lowercases all the words and .tokenizes the text.
+
+\subsubsection{Evaluation}
+\label{sec-2-4-3}
+
+\subsection{Results}
+\label{sec-2-5}
+\subsubsection{Baseline}
+\label{sec-2-5-1}
+
+\begin{table*}[htb]
+\caption{\label{tab:baseline-pan2015}Results (negative MSE and standard deviation, CV-10) for the baseline system on the PAN 2015 dataset using the SVM classifier and unigrams with tf-idf normalization.}
+\centering
+\begin{tabular}{llllll}
+ & agr & con & ext & opn & sta\\
+\hline
+en & -0.02 (0.02) & -0.02 (0.02) & -0.02 (0.02) & -0.02 (0.01) & -0.04 (0.04)\\
+ &  &  &  &  & \\
+\hline
+es & -0.02 (0.02) & -0.02 (0.03) & -0.02 (0.03) & -0.02 (0.03) & -0.03 (0.03)\\
+\hline
+it & -0.02 (0.04) & -0.01 (0.01) & -0.02 (0.05) & -0.02 (0.03) & -0.03 (0.04)\\
+\hline
+nl & -0.03 (0.04) & -0.01 (0.03) & -0.02 (0.03) & -0.01 (0.02) & -0.03 (0.06)\\
+\end{tabular}
+\end{table*}
+
+
+\subsection{Conclusions and Future Work}
+\label{sec-2-6}
+% Emacs 25.2.1 (Org mode 8.2.10)
+\end{document}

@@ -1,0 +1,120 @@
+% Created 2017-05-29 lun 13:06
+\documentclass[article,11pt,nofixltx2e]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{acl2016}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[authoryear]{natbib}
+\aclfinalcopy
+\author{Angelo Basile - s3275655}
+\date{\textit{[2016-11-19 sab]}}
+\title{Personality prediction from tweets: a language independent approach \textasciitilde{} DRAFT}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.2.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Author profiling is the task of predicting some aspects (e.g., gender, age, personality) of the author of a given text. In this paper we describe a system that predicts the personality of twitter users. We trained a neural network on the TwiSty corpus and we reached a [TODO ADD] x.xx in RMSE score.
+\end{abstract}
+
+\section{Introduction}
+\label{sec-1}
+
+It has been shown that given a text, it is possible to say a lot about its author: its gender, wheter he or she is old or young, if he is depressed, what is his dominant personality trait. This study focuses on this exact last thing: given some text --- tweets, in this case --- we want to predict the personality of the author.[TODO expand]
+
+\section{Related Work}
+\label{sec-2}
+
+The work of [TODOLIU] shows that neural models can successfully model author personality traits from text. The authors suggest at the end of the paper that "the lack of feature engineering should support language independence". For this work we attempted to replicate the exact same model that [TODO fix][liu et al] built: we wanted to test wether it was possible to use it across languages.
+
+For the baseline: we considered the submissions to the PAN forum [TODO ADD references and footnote explaining what PAN is] in the last years and we saw that many participants proposed an SVM-based model with a sparse feature representation. Such systems achieved good performances: we decided to use them as a baseline.
+
+\section{Model}
+\label{sec-3}
+
+Our system consists of a recurrent and compositional neural-network. A first layer builds embeddings at the character level; the output is then used to build word embeddings; finally, a feed forward network uses both these representations to predict each personality trait individually.
+
+\section{Experiments}
+\label{sec-4}
+\subsection{Data}
+\label{sec-4-1}
+
+For this task we trained and tested our model on the TwiSty corpus [TODO add reference]. Additionally, we worked on the PAN 2015 dataset in order to compare our results with those reported by [TODOLIU]: Table \ref{tab:sampledataset} shows a sample of the data.
+
+\begin{table*}[htb]
+\caption{\label{tab:sampledataset}Sample instances from the PAN 2015 dataset}
+\centering
+\begin{tabular}{llrrrrr}
+author & text & ext & sta & agr & con & opn\\
+\hline
+e5b59ccc & @username @username ay friend, q te fumasteSSS\ldots{} & 0.0 & 0.2 & 0.2 & 0.3 & 0.2\\
+ed970294 & “@username: @username "you can't have your cak\ldots{} & 0.1 & 0.2 & 0.2 & 0.0 & 0.1\\
+4b05f4e0 & I should probably go to bed considering I have\ldots{} & 0.5 & 0.0 & 0.3 & 0.3 & 0.4\\
+de7f0515 & @username the sameee\n@username Great!!\nRT @u\ldots{} & 0.2 & -0.1 & 0.2 & 0.0 & 0.1\\
+a71c93ed & On my very last Nerve!\nI am nothing and I hav\ldots{} & 0.2 & 0.0 & 0.0 & 0.3 & 0.4\\
+\end{tabular}
+\end{table*}
+
+\subsection{Pre-processing}
+\label{sec-4-2}
+
+For the baseline system we used the default pre-processor included in the scikit-learn tf-idf vectorizer, which lowercases all the words and .tokenizes the text.
+
+\subsection{Evaluation}
+\label{sec-4-3}
+
+\section{Results}
+\label{sec-5}
+\subsection{Baseline}
+\label{sec-5-1}
+
+\begin{table*}[htb]
+\caption{\label{tab:baseline-pan2015}Results (negative MSE and standard deviation, CV-10) for the baseline system on the PAN 2015 dataset using the SVM classifier and unigrams with tf-idf normalization.}
+\centering
+\begin{tabular}{llllll}
+ & agr & con & ext & opn & sta\\
+\hline
+en & -0.02 (0.02) & -0.02 (0.02) & -0.02 (0.02) & -0.02 (0.01) & -0.04 (0.04)\\
+ &  &  &  &  & \\
+\hline
+es & -0.02 (0.02) & -0.02 (0.03) & -0.02 (0.03) & -0.02 (0.03) & -0.03 (0.03)\\
+\hline
+it & -0.02 (0.04) & -0.01 (0.01) & -0.02 (0.05) & -0.02 (0.03) & -0.03 (0.04)\\
+\hline
+nl & -0.03 (0.04) & -0.01 (0.03) & -0.02 (0.03) & -0.01 (0.02) & -0.03 (0.06)\\
+\end{tabular}
+\end{table*}
+
+
+\section{Conclusions and Future Work}
+\label{sec-6}
+
+TODO
+
+All the code used to obtain the results presented in this paper is available at \url{https://github.com/anbasile/perspred}.
+% Emacs 25.2.1 (Org mode 8.2.10)
+\end{document}

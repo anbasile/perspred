@@ -1,0 +1,801 @@
+#+AUTHOR: Angelo Basile
+#+EMAIL: a.basile@student.rug.nl
+#+DATE: [2016-11-19 sab]
+#+OPTIONS: toc:nil
+
+#+LaTeX_CLASS_OPTIONS: [article,11pt,nofixltx2e]
+#+LATEX_HEADER: \usepackage{acl2016}
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{url}
+#+LATEX_HEADER: \usepackage{latexsym}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage[authoryear]{natbib}
+#+LATEX_HEADER: \aclfinalcopy 
+
+* TEMPLATE
+  :PROPERTIES:
+  :EXPORT_FILE_NAME: report-template-angelo
+  :END:
+
+#+BEGIN_ABSTRACT
+For the weekly reports you might not need this, but it’s good to get used soon to writ- ing proper abstracts to research papers.  Give it a try, and we will provide feedback.
+#+END_ABSTRACT
+
+** Introduction
+
+The template is structured along the lines of a re- search paper, and you can fill each appropriate sec- tion with the relevant information. The idea is that you get used to using the standard format adopted in research to report on experiments. At times this might feel a little stretched in the context of home- work and the exercises you are asked to complete, but give it a try. Also, don’t get too hung up about what should go where: try make decisions, and we will give you feedback. Finally, for spefific assignments you might want to implement some modifications to the template (for example in case you don’t have a separate test set, or you might want to have a more general “Experiments” sec- tion in case you have to run more than one, and stuff like that). Feel free to do so, as long as you maintain some proper structure which is appropri- ate for a research paper. Additional questions can be answered in the final section.
+** Related work
+
+For the reports you probably don’t need this, but in case you want to mention some background or motivate some choices that you made based on the existing literature, this is the place to do it.
+
+** Data
+Here you will report on what data you used. How much is it? Where did it come from? Is it annotated? Do you know anything about inter- annotator agreement?
+** Method/Approach
+Here you will report on method you chose to run your experiments. Also evaluation methods can go here. Any settings you used also can be described here. Do you have a separate dev set? Do you use cross-validation? What features are you using?
+** Results
+Your final results on test data. You can also include here some results on development, of course, but you should keep them clearly separate from results on test data. Results on development are useful to tune your system, so they better go in Method.  But for comparison you might want to report your best dev results also in this section. It can happen that for some assignments you have no separate test set, so this section in case can be merged with the previous one.
+** Discussion/Conclusion
+What observations can you glean from the results?  In the context of the course, you can really use this space not only to discuss the actual results with your own observations, but also to add some re- flections on what you had to do, strategies you adopted, what you could do differently, and so on.
+
+** Answers to additional questions
+If something doesn’t fit in the above, or if there are additional, more general questions in the assign- ment that are not directly answered in the previous sections, you can use this space for them.
+* Personality prediction from tweets: a language independent approach ~ DRAFT
+  :PROPERTIES:
+  :EXPORT_FILE_NAME: s3275655-ltp-draft
+  :EXPORT_AUTHOR: Angelo Basile - s3275655
+  :END:
+
+#+BEGIN_ABSTRACT
+Author profiling is the task of predicting some aspects (e.g., gender, age, personality) of the author of a given text. In this paper we describe a system that predicts the personality of twitter users. We trained a neural network on the TwiSty corpus and we reached a [TODO ADD] x.xx in RMSE score.
+#+END_ABSTRACT
+
+** Introduction
+
+It has been shown that given a text, it is possible to say a lot about its author: its gender, wheter he or she is old or young, if he is depressed, what is his dominant personality trait. This study focuses on this exact last thing: given some text --- tweets, in this case --- we want to predict the personality of the author.[TODO expand]
+
+** Related Work
+
+The work of [TODOLIU] shows that neural models can successfully model author personality traits from text. The authors suggest at the end of the paper that "the lack of feature engineering should support language independence". For this work we attempted to replicate the exact same model that [TODO fix][liu et al] built: we wanted to test wether it was possible to use it across languages.
+
+For the baseline: we considered the submissions to the PAN forum [TODO ADD references and footnote explaining what PAN is] in the last years and we saw that many participants proposed an SVM-based model with a sparse feature representation. Such systems achieved good performances: we decided to use them as a baseline.
+
+** Model
+
+Our system consists of a recurrent and compositional neural network. A first layer builds embeddings at the character level; the output is then used to build word embeddings; finally, a feed forward network uses both these representations to predict each personality trait individually.
+
+** Experiments
+*** Data
+
+For this task we trained and tested our model on the TwiSty corpus [TODO add reference]. Additionally, we worked on the PAN 2015 dataset in order to compare our results with those reported by [TODOLIU]: Table [[tab:sampledataset]] shows a sample of the data.
+
+#+CAPTION: Sample instances from the PAN 2015 dataset
+#+NAME: tab:sampledataset
+#+ATTR_LaTeX: :float multicolumn
+| author   | text                                              | ext |  sta | agr | con | opn |
+|----------+---------------------------------------------------+-----+------+-----+-----+-----|
+| e5b59ccc | @username @username ay friend, q te fumasteSSS... | 0.0 |  0.2 | 0.2 | 0.3 | 0.2 |
+| ed970294 | “@username: @username "you can't have your cak... | 0.1 |  0.2 | 0.2 | 0.0 | 0.1 |
+| 4b05f4e0 | I should probably go to bed considering I have... | 0.5 |  0.0 | 0.3 | 0.3 | 0.4 |
+| de7f0515 | @username the sameee\n@username Great!!\nRT @u... | 0.2 | -0.1 | 0.2 | 0.0 | 0.1 |
+| a71c93ed | On my very last Nerve!\nI am nothing and I hav... | 0.2 |  0.0 | 0.0 | 0.3 | 0.4 |
+
+*** Pre-processing
+
+For the baseline system we used the default pre-processor included in the scikit-learn tf-idf vectorizer, which lowercases all the words and .tokenizes the text.
+
+*** Evaluation
+
+** Results
+*** Baseline
+
+#+CAPTION: Results (negative MSE and standard deviation, CV-10) for the baseline system on the PAN 2015 dataset using the SVM classifier and unigrams with tf-idf normalization.
+#+NAME: tab:baseline-pan2015
+#+ATTR_LaTeX: :float multicolumn
+|    | agr          | con          | ext          | opn          | sta          |
+|----+--------------+--------------+--------------+--------------+--------------|
+| en | -0.02 (0.02) | -0.02 (0.02) | -0.02 (0.02) | -0.02 (0.01) | -0.04 (0.04) |
+|    |              |              |              |              |              |
+|----+--------------+--------------+--------------+--------------+--------------|
+| es | -0.02 (0.02) | -0.02 (0.03) | -0.02 (0.03) | -0.02 (0.03) | -0.03 (0.03) |
+|----+--------------+--------------+--------------+--------------+--------------|
+| it | -0.02 (0.04) | -0.01 (0.01) | -0.02 (0.05) | -0.02 (0.03) | -0.03 (0.04) |
+|----+--------------+--------------+--------------+--------------+--------------|
+| nl | -0.03 (0.04) | -0.01 (0.03) | -0.02 (0.03) | -0.01 (0.02) | -0.03 (0.06) |
+
+
+** Conclusions and Future Work
+
+TODO
+
+All the code used to obtain the results presented in this paper is available at \url{https://github.com/anbasile/perspred}.
+# * Using Naive Bayes with bow to classify reviews
+#   :PROPERTIES:
+#   :EXPORT_FILE_NAME: lfd-a1-s3275655-angelo
+#   :EXPORT_DATE: 21-11-2016
+#   :END:
+
+# #+BEGIN_ABSTRACT
+# We use Naive Bayes with /bow/ representation and /tf/idf/ to classify reviews by sentiment and topic. The approach shows that it is possible to achieve good results with a minimal effort and a simple algorithm.
+# #+END_ABSTRACT
+
+# ** Introduction
+
+# This paper present a simple but nonetheless effective methodology for text classification. We show that both binary and multi-class classification can be successfully performed using a bayesian classifier and bag-of-words representation.
+
+# ** Data
+
+# The text is annotated by sentiment and topic. The sentiment annotation is binary: there are negative and positive reviews. The topic tagset is intended for a multi-class classification; there are six different tags: =books, camera, dvd, health, music, software=.
+
+# Thera are in total 6000 reviews. The text is already tokenized.
+# ** Method
+
+# We representated the text using the bag-of-words representation format. Instead of using the row counts we use tf-idf to transform them: words are the features we feed to the Naive Bayes algorithm.
+
+# We split the datset in two parts: 75% for the training set and the rest we reserve for testing.
+
+# We are going to use a standard classification report(precision, recall, f-score) to analyze the results. We are not reporting on the cross-validations results since they don't differ from the other metrics. The /python/ code that is being released as a contribution with this paper will print the cross-validations results and a confusion matrix.
+
+# ** Results
+
+# The algorithm proves to perform very well considering the low complexity of the setting. As expected the topic classification scores outperforms the polarity results.
+
+# We set the prior probabilities as our baseline for the sentiment classification task. More work will be needed to set a proper baseline for the multi-class classification task.
+
+# #+CAPTION: Baseline for the sentiment classification
+# #+NAME: tab:baseline-sentiment
+# |     | precision |
+# |-----+-----------|
+# | neg |      0.50 |
+# | pos |      0.49 |
+
+# #+CAPTION: Results for the sentiment classification
+# #+NAME: tab:results-sentiment
+# |         | precision | recall | f1-score | support |
+# |---------+-----------+--------+----------+---------|
+# | neg     |      0.71 |   0.93 |     0.81 |     731 |
+# | pos     |      0.91 |   0.64 |     0.75 |     769 |
+# |---------+-----------+--------+----------+---------|
+# | avg/tot |      0.81 |   0.78 |     0.78 |    1500 | 
+
+# #+CAPTION: Results for the topic classification
+# #+NAME: tab:results-topic
+# |          | precision | recall | f1-score | support |
+# |          |           |        |          |         |
+# | books    |      0.94 |   0.91 |     0.93 |     233 |
+# | camera   |      0.83 |   0.94 |     0.88 |     258 |
+# | dvd      |      0.88 |   0.91 |     0.89 |     242 |
+# | health   |      0.97 |   0.79 |     0.87 |     243 |
+# | music    |      0.96 |   0.95 |     0.95 |     260 |
+# | software |      0.89 |   0.93 |     0.91 |     264 |
+# |----------+-----------+--------+----------+---------|
+# | avg/tot  |      0.91 |   0.91 |     0.91 |    1500 |
+
+# ** Conclusion
+# The results of our experiment shows that topic classification at this point is a well understood problem. Sentiment analysis remains a harder task, but decent results can still be achieved while using traditional techniques. Further work will be needed to address other problems that we have left untouched here: chaining the sentiment analysis after the topic classification; a more fine-grained error analysis; evaluating and comparing different algorithms; adding linguistic annotation to the text and using it as additional features.
+# * Which model for better classifiying product reviews by topic
+#   :PROPERTIES:
+#   :EXPORT_FILE_NAME: lfd-a2-s3275655-angelo
+#   :EXPORT_DATE: 21-11-2016
+#   :END:
+
+# #+BEGIN_ABSTRACT
+# We explore how different classifiers using /bow/ representation and /tf/idf/ perform in a multi-class topic classification task. The results shows that Naive Bayes achieves the best results despite its simplicity.
+# #+END_ABSTRACT
+
+# ** Introduction
+
+# This paper presents the comparison of different classifier: Naive Bayes, Decision Tree and K-Nearest have been tested on written product reviews annotated by topic.
+
+# We show that multi-class classification can be successfully performed using Naive Bayes and bag-of-words representation. 
+
+# ** Data
+
+# The text is annotated by topic. The tagset is intended for a multi-class classification; there are six different tags: =books, camera, dvd, health, music, software=.
+
+# There are in total 6000 reviews. The text is already tokenized.
+
+# ** Method
+
+# We represented the text using the bag-of-words representation format. Instead of using the row counts we use tf-idf to transform them: words are the features we feed to the algorithms.
+
+# To analyze the results we are going to use a standard classification report(precision, recall, f-score) and the accuracy score coming from a cross validation.
+
+# We removed the stop words using the builtin list implemented in the toolbox we used.
+# ** Results
+
+# #+CAPTION: Overall results
+# #+NAME: tab:overall-table
+# |      | prec | recall |  f-1 |  acc |    N |
+# |------+------+--------+------+------+------|
+# | NB   | 0.91 |   0.91 | 0.91 | 0.91 | 1500 |
+# | K-NN | 0.83 |   0.81 | 0.81 | 0.81 | 1500 |
+# | DT   | 0.78 |   0.78 | 0.78 | 0.78 | 1500 |
+
+# #+CAPTION: Accuracy
+# #+NAME: tab:accuracy-table
+# | Naive Bayes   | 0.91  (+/- 0.01) |
+# | K-NN          | 0.81  (+/- 0.02) |
+# | Decision Tree | 0.78  (+/- 0.02) |
+
+# For K-NN, we noted that higher (>50) values of K correlate with a higher accuracy; by varying K  also class performance changes (roughly of 0.04 points). This algorithm is the one that benefited the most (+0.04) from the filtering of the stop words.
+
+# For the Decision Tree algorithm we experiment with two way to prevent overfitting: by limiting the depth of the tree and by putting a restrain on the minimal number of instances per leaf. We saw that a minimal depth of 15 levels is necessary in order for the algorithm to score a reasonable result.
+
+# *** Baseline
+
+# The following table highlights the baseline for the six classes based on the original distribution of the data.
+
+# #+CAPTION: Baseline for the topic classification
+# #+NAME: tab:baseline-topic
+# | dvd      | 0.17 |
+# | music    | 0.17 |
+# | software | 0.16 |
+# | health   | 0.15 |
+# | camera   | 0.15 |
+# | books    | 0.16 |
+# |----------+------|
+# |          |      |
+# *** Training/Testing time
+
+# All three algorithms are very fast to both train and run. K-NN is the only algorithm of the group to require more time for the testing stage compared to training: this fact is not surprising at all, considering that during the training K-NN only stores the information and so there is no actual training involved. 
+
+# DecisionTree is the slowest to train, but the fastest to execute: we expected this behaviour considering that at training time it must only "walk down" the generated tree.
+
+# #+CAPTION: Training and testing time using default settings
+# #+NAME: tab:time-table
+# |               | train-t | test-t |
+# |---------------+---------+--------|
+# | Naive Bayes   | 0.41    | 0.09   |
+# | Decision Tree | 1.59    | 0.08   |
+# | K-NN          | 0.33    | 0.42   |
+
+# *** Best model
+
+# Naive Bayes proves to be the best algorithm considering the overall results. Training and testing times allows it to be efficiently used in a generic implementation geared toward end-users.
+
+# ** Conclusion
+
+# We explored how radically different algorithms perform on the same data and we concluded that Naive Bayes is best one. We tried to use a truncated SVD, but Naive Bayes (and also the other algorithm) performed very bad (~ 0.3): assuming these algorithms are not efficient in considering the relations between features, it makes sense that this type of input is not well suited in these cases.
+
+# Further work remains to be done: although we manually explored the effect of different parameters, we didn't perform a systematic tuning by using the tools available in our toolbox (i.e gridSearch).
+# * Clustering and classifying product reviews by sentiment and topic: an overview
+#   :PROPERTIES:
+#   :EXPORT_FILE_NAME: lfd-a3-s3275655-angelo
+#   :EXPORT_DATE: 07-12-2016
+#   :END:
+
+# #+BEGIN_ABSTRACT
+# We explore how both classification and clustering models perform on written product reviews annotated by sentiment and topic. We found that adding POS tags and filtering stop words considerably improves the performance for all the models.
+# #+END_ABSTRACT
+
+# ** Introduction
+
+# We investigate how classification and clustering algorithms perform on written product reviews. We use a tf/idf vectorizer for representing the documents, which have been annotated by POS and lemmatized. We explore how feature engineering affects the overall performances of the models: we found that linguistic intuitions can help in selecting the best features.
+
+# ** Data
+
+# The text is annotated by topic and by sentiment. The topic tagset is intended for a multi-class classification; there are six different tags: =books, camera, dvd, health, music, software=. The sentiment tagset consist onyl of two tags: =pos= and =neg=.
+
+# There are in total 6000 reviews. The text is already tokenized.
+
+# ** Method
+
+# We represented the text using the bag-of-words representation format. Instead of using the row counts we use tf-idf to transform them, after having added POS tags and lemmas for each token.
+
+# We removed the stop words using the builtin list implemented in the toolbox we used.
+
+# Using a grid-search technique we fine-tuned the hyper-parameters of the SVM classifier: we found that linear kernels considerably outperforms non-linear ones (/rbf/ in our case) and lower values of /c/ (a penalty for errors parameter) are better than higher ones (1.0 being the best among the set 1,10,100,1000).
+
+# To analyse the results:  we used the accuracy score coming from a cross validation for the SVM classifier.
+
+# The performances of the K-Means models are being assessed using homogeneity, completeness, v-score and Rand Index. Additionally, we printed the top terms for each cluster in order to manually interpret them: the results are surprisingly positive.
+
+# ** Experiments
+
+# We run three different experiments.
+
+# First, we classified the reviews by sentiment using an SVM classifier.
+
+# Then, we clustered the same reviews by topic (k=6) using the K-Means algorithm.
+
+# Finally, we selected 2 (/music/ and /health/) out of the 6 topic labels and kept the sentiment tag in place: from here we performed two sub-experiments. First, we tried to steer the clustering toward the topic dimension and then toward the sentiment dimension. When aiming for the sentiment clustering, we filter the words by part-of-speech including only adjectives, interjections and verbs; we used nouns and verbs for topic.
+
+# We noticed that training the SVM classifier on the annotated dataset is a relatively intensive task: on a /Core i7/ machine it takes roughly two minutes to complete the training and so a 5 fold cross validations requires more than 10 minutes.
+# *** svm default settings					   :noexport:
+#     - adding stopwords decreases the performances
+#     - 
+# *** svm best model						   :noexport:
+#     - simply adding pos tags doesnt help
+#     - filtering like for clustering helps a lot
+#     - verbs and nouns is better than nouns only (using lemmas)
+# *** clustering							   :noexport:
+#     - does it make sense to use nouns vs. adjectives to distinguish between sentiment vs. topic?
+#     - stop words helps a lot
+#     - filtering nouns helps
+#     - adding pos doesn't
+#     - compressing data (truncated svd) doesn't help
+#     - performance change a lot! from one run to the other
+#       + Homogeneity: 0.147, 0.267
+#       + Completeness: 0.176, 0.364 
+#       + V-measure: 0.160, 0.308
+#     - improving n init to 100 doens't help
+#     - using lemmas and nouns terribly improves performances
+#     - using lemmas, verbs, and nouns improved performances even more
+#     - we print top terms for clusters to help interpretation (and check againts labels since we have them)
+# *** clustering two labels					   :noexport:
+#     - verbs, added to nouns, improves a lot the performances
+# ** Results
+
+# By exploring how different features contribute to the performances, we found that the same features that help improving the SVM also help the K-Means algorithm, with one exception: stop word lists. The SVM classifier shows a decrease in performances when stop words are filtered without adding POS information. In all the other cases, featuring engineering decisions and performances are correlated for both algorithms.
+
+# K-Means shows terrible performance when fed with non annotated data: however, adding lemmas and POS tags allows the algorithm to achieve reasonable performances.
+
+# We found that in all the setups compressing the data using a truncated SVD decreases the performances.
+
+# #+CAPTION: Scores for SVM
+# #+NAME: tab:top-termsworst
+# | model | features      | kernel | accuracy |
+# |-------+---------------+--------+----------|
+# | SVC   | BOW only      | linear |     0.81 |
+# |       | BOW only      | rbf    |     0.51 |
+# |       | BOW,lemma     | linear |     0.83 |
+# |       | BOW,lemma,POS | linear |     0.82 |
+
+# #+CAPTION: Scores for clustering
+# #+NAME: tab:top-termsworst
+# |       | homo | comp |    v |   RI |
+# |-------+------+------+------+------|
+# | worst | 0.22 | 0.26 | 0.24 | 0.10 |
+# | best  | 0.47 | 0.54 | 0.50 | 0.29 |
+
+# #+CAPTION: Top terms per cluster: worst settings
+# #+NAME: tab:top-termsworst
+# #+ATTR_LaTeX: :float multicolumn
+# | 0       | 1     | 2     | 3        | 4       | 5     |
+# |---------+-------+-------+----------+---------+-------|
+# | book    | "     | ,     | camera   | product | .     |
+# | .       | ,     | .     | .        | .       | ,     |
+# | ,       | .     | 's    | ,        | hair    | !     |
+# | read    | 's    | n't   | lens     | ,       | n't   |
+# | 's      | n't   | )     | pictures | use     | 's    |
+# | books   | album | "     | digital  | !       | great |
+# | n't     | )     | (     | battery  | n't     | cd    |
+# | author  | -     | '     | great    | great   | like  |
+# | "       | (     | ;     | canon    | easy    | good  |
+# | reading | !     | movie | use      | does    | just  |
+
+# #+CAPTION: Top terms per cluster: best settings
+# #+NAME: tab:top-termsbest
+# #+ATTR_LaTeX: :float multicolumn
+# | 0      | 1         | 2         | 3        | 4       | 5    |
+# |--------+-----------+-----------+----------+---------+------|
+# | album  | movie     | book      | product  | camera  | use  |
+# | song   | film      | read      | use      | picture | '    |
+# | cd     | watch     | author    | program  | battery | work |
+# | music  | '         | write     | software | use     | buy  |
+# | listen | character | story     | work     | buy     | time |
+# | track  | make      | page      | version  | lens    | make |
+# | sound  | time      | character | computer | quality | lens |
+# | '      | story     | '         | buy      | canon   | hair |
+# | band   | scene     | time      | support  | case    | dvd  |
+# | love   | love      | make      | problem  | zoom    | love |
+
+# #+CAPTION: Scores for clustering when aiming for sentiment
+# #+NAME: tab:top-termsworst
+# |       | homo | comp |    v |   RI |
+# |-------+------+------+------+------|
+# | senti | 0.00 | 0.00 | 0.00 | 0.00 |
+# | topic | 0.24 | 0.30 | 0.26 | 0.20 |
+
+# #+CAPTION: Top terms per cluster +sentiment
+# #+NAME: tab:top-termsentiment
+# | 0      | 1         |
+# |--------+-----------|
+# | good   | use       |
+# | '      | work      |
+# | great  | buy       |
+# | make   | good      |
+# | love   | great     |
+# | listen | '         |
+# | buy    | try       |
+# | like   | make      |
+# | hear   | easy      |
+# | say    | recommend |
+
+# #+CAPTION: Scores for clustering when aiming for topic
+# #+NAME: tab:top-termsworst
+# |       | homo | comp |    v |   RI |
+# |-------+------+------+------+------|
+# | senti | 0.00 | 0.00 | 0.00 | 0.10 |
+# | topic | 0.76 | 0.76 | 0.75 | 0.81 |
+
+
+# #+CAPTION: Top terms per cluster +topic
+# #+NAME: tab:top-termstopic
+# | 0        | 1      |
+# |----------+--------|
+# | use      | album  |
+# | product  | song   |
+# | work     | cd     |
+# | hair     | music  |
+# | buy      | '      |
+# | '        | listen |
+# | time     | track  |
+# | make     | sound  |
+# | try      | love   |
+# | purchase | band   |
+
+# *** Baseline
+
+# Table [[tab:baseline-topic]] highlights the distribution of the data for the six classes.
+
+# A dummy cassifier based on the most frequent class would have the performances highlighted in table [[tab:baseline]].
+
+# #+CAPTION: Baseline
+# #+NAME: tab:baseline
+# |           | accuracy |
+# |-----------+----------|
+# | sentiment |     0.47 |
+# | topic     |     0.15 |
+
+# #+CAPTION: Data distribution along the topic dimension
+# #+NAME: tab:baseline-topic
+# | dvd      | 0.17 |
+# | music    | 0.17 |
+# | software | 0.16 |
+# | health   | 0.15 |
+# | camera   | 0.15 |
+# | books    | 0.16 |
+
+# #+CAPTION: Data distribution along the sentiment dimension
+# #+NAME: tab:baseline-topic
+# | neg | 0.49 |
+# | pos | 0.51 |
+
+# ** Conclusion
+# We explored how different algorithms perform on the same data while changing the feature set. We found that simple linguist intuitions can indeed help in tuning NLP pipelines. From our experiment we can confirm one result already known in the literature: in classifying textual data linear kernels outperform non linear-ones. We used a robust methodology for tuning the hyper-parameters of our models. We found that the SVM classifier can achieve high performances in sentiment classification as well as in topic classification.
+
+# Additional work remains to be done: although we did use cross validation for reporting our results, we did not performed a proper debugging for checking bias and variance problems (i.e. by plotting learning curves). We did not investigate how additional features could have affected the models: n-grams, for instance.
+# * Exploring Neural Language Models
+#   :PROPERTIES:
+#   :EXPORT_FILE_NAME: lfd-a4-s3275655-angelo
+#   :EXPORT_DATE: 14-12-2016
+#   :END:
+
+
+# #+BEGIN_ABSTRACT
+# We explore some of the potential of neural language models: we use large pre-trained word vectors to perform simple word and relation similarity query. Then we use the vectors in combination with a perceptron for a named entity (binary and multi-label) classification task. We find that large vectors can capture fine-grained differences and similarities and lead to good classification results.
+# #+END_ABSTRACT
+
+# ** Introduction
+# This paper presents an exploratory work on neural language models.
+
+# ** Data
+
+# The dataset for the classification task consists of =39595= annotated tokens. The tagset consists of 6 labels: =GPE,ORG,PERSON,LOC,DATE,CARDINAL=. The interpretation is intuitive. The same tagset is being used for two different tasks: a binary classification task and a multi-class one. The binary classification task is performed by grouping all the labels in two groups: =GPE, LOCATION=, indicating location and all the others together indicating =NON-LOCATION=. Table [[tab:data-distribution]] highlights the distribution of the data across the labels.
+
+# #+CAPTION: Data distribution across labels
+# #+NAME: tab:data-distribution
+# #+ATTR_LaTeX: :float multicolumn
+# |   GPE |  ORG | PERSON |  LOC | DATE | CARDINAL |
+# |-------+------+--------+------+------+----------|
+# |  0.32 | 0.23 |   0.18 | 0.15 | 0.12 |     0.02 |
+
+# ** Method
+# *** Classification task
+
+# We train a perceptron using 75% of the data, while holding the rest for evaluation purposes. The best parameters have been found using a random search grid and evaluated using cross-validation. We set the baseline using a dummy classifier that always predict the most frequent label in the training set: table [[tab:baseline]] reports the results. We use the 50 dimensional word vectors trained on Wikipedia and Gigawire using the Glove algorithm for representing the words in the dataset.
+
+# #+CAPTION: Baseline
+# #+NAME: tab:baseline
+# |             | accuracy |
+# |-------------+----------|
+# | binary      |     0.66 |
+# | multi-class |     0.33 |
+
+# #+CAPTION: Best parameters for the perceptron
+# #+NAME: tab:parameters
+# #+ATTR_LaTeX: :float multicolumn
+# |               | multi-class | binary     |
+# |---------------+-------------+------------|
+# | learning rate | optimal     | invscaling |
+# | penalty       | l1          | l1         |
+# | n_iter        | 43          | 29         |
+
+# *** Word embeddings
+
+# We use the 300 dimensional word embeddings trained on the Common Crawl using the Glove algorithm for performing manual queries: we want to investigate to what extent word embeddings can capture similarity between words: given a certain word, we want to obtain a sorted list of its most similar neighbours. And since embeddings are vectors, we also want to leverage their algebraic properties to explore how words are distributed in space: given three words --- w1,w2,w3 --- we will replace them with their respective vectors and compute the following equation:
+
+# \begin{equation}
+# \vec{w4}=\vec{w1}-\vec{w2}+\vec{w4}
+# \end{equation}
+     
+# More clearly: we want to complete analogies such /king:man=woman:x/: for this task we use cosine similarity.
+
+# ** Results
+
+# *** Classification
+
+# We found that the perceptron combined with the embeddings achieves good results in both the binary and the classification task, scoring in accuracy 0.93 the first one, and 0.80 the last one.
+
+# We applied the model to three words that were never seen during training and we found that it correctly predicted 2 of them. /Togliatti/, similar to /Andrea, Tang, Laura/ was correctly classified as a =PERSON=; /Tesla/, similar to /Amtrak, Nissan, AT&T/, was correctly classified as =ORG=. /Togliattigrad/, similar to /Leningrad, Belgrade/ was incorrectly classifier as =ORG=. Further work will be needed for assessing the generalization capability of the model.
+
+# The confusion matrix in Table [[tab:multi-class]] gives some insights for a basic error analysis: we can see that =ORG= is often being confused with =PERSON=: one possible cause might be the fact the both are proper names and a linear model cannot capture the differences between the two. We trained a multi-layer perceptron on the same data and we found that for these two classes performances greatly improved[fn:2].
+
+# #+CAPTION: Classification report for binary task
+# #+NAME: tab:binary-class
+# #+ATTR_LaTeX: :float multicolumn
+# |              | precision | recall | f1-score | support |
+# |--------------+-----------+--------+----------+---------|
+# | LOCATION     |      0.88 |   0.91 |     0.89 |    3020 |
+# | NON-LOCATION |      0.95 |   0.94 |     0.94 |    5879 |
+# |--------------+-----------+--------+----------+---------|
+# | avg/total    |      0.93 |   0.93 |     0.93 |    8899 |
+
+
+# #+CAPTION: Confusion matrix for binary task
+# #+NAME: tab:cfmatrix-binary
+# #+ATTR_LaTeX: :float multicolumn
+# |         |  LOC | NON-LOC |
+# |---------+------+---------|
+# | LOC     | 2736 |     284 |
+# | NON-LOC |  381 |    5498 |
+
+
+# #+CAPTION: Classification report for multi-clas task
+# #+NAME: tab:multi-class
+# #+ATTR_LaTeX: :float multicolumn
+# |           | precision | recall | f1-score | support |
+# |-----------+-----------+--------+----------+---------|
+# | CARDINAL  |      0.89 |   0.91 |     0.90 |    1330 |
+# | DATE      |      0.92 |   0.93 |     0.92 |    1021 |
+# | GPE       |      0.86 |   0.86 |     0.86 |    2881 |
+# | LOC       |      0.79 |   0.78 |     0.78 |     139 |
+# | ORG       |      0.67 |   0.67 |     0.67 |    2015 |
+# | PERSON    |      0.72 |   0.69 |     0.71 |    1513 |
+# |-----------+-----------+--------+----------+---------|
+# | avg/total |      0.80 |   0.80 |     0.80 |    8899 |
+
+
+# #+CAPTION: Confusion matrix for multi-class task
+# #+NAME: tab:cfmatrix-multi
+# #+ATTR_LaTeX: :float multicolumn
+# |     |  CAR | DAT |  GPE | LOC |  ORG |  PER |
+# |-----+------+-----+------+-----+------+------|
+# | CAR | 1210 |  44 |    1 |   0 |   71 |    4 |
+# | DAT |   42 | 948 |    8 |   1 |   18 |    4 |
+# | GPE |   10 |   5 | 2479 |  14 |  259 |  114 |
+# | LOC |    2 |   0 |   18 | 108 |    5 |    6 |
+# | ORG |   64 |  23 |  282 |  11 | 1358 |  277 |
+# | PER |   38 |  10 |   93 |   3 |  320 | 1049 |
+
+# *** Word embeddings query
+
+# **** Similarities
+# We found that embeddings can capture very fine-grained similarities (and differences) between words: /Epicurus/ and /Thucydides/ are both ancient Greek writers: it is positively surprising that the first is correctly clustered with other ancient philosophers and the second one is clustered with other ancient historians.
+
+# #+BEGIN_QUOTE
+# ['epicurus', 'lucretius', 'averroes', 'ennius', 'grotius', 'aeschylus', 'anonymus', 'vegetius', 'schleiermacher', 'gildas']
+# #+END_QUOTE
+
+# #+BEGIN_QUOTE
+# ['thucydides', 'strabo', 'tacitus', 'plutarch', 'josephus', 'pliny', 'heraclitus', 'aeschylus', 'ptolemy', 'lucretius']
+# #+END_QUOTE
+
+# The neighbours of the word /apple/ show that different senses of the same word are being embedded together in the same vector: fruit and tech companies are in the same space. 
+
+# #+BEGIN_QUOTE
+# ['apricot', 'acorn', 'blackberry', 'doritos', 'asus', 'onion', 'apples', 'ibm', 'oreo', 'melon']
+# #+END_QUOTE
+
+
+# Polysemous words[fn:1] do not lead to different vectors because all the different contexts in which a word occurs are being grouped together: each embedding is trained considering all the occurrences of a form, therefore the differences between two sense of the same word are not learned: this makes this version of word embeddings impractical for word-sense disambiguation tasks.
+
+
+# **** Relations
+
+# We found that word embeddings are extremely powerful in capturing relations among words: they properly learn some fundamental relations that govern names, verbs, adjectives and adverbs. Table [[tab:analogy]] shows some interesting results.
+
+# #+CAPTION: Analogy completion
+# #+NAME: tab:analogy
+# #+ATTR_LaTeX: :float multicolumn
+# | w1       | w2        | X       | w3     |
+# |----------+-----------+---------+--------|
+# | maradona | argentina | neymar  | spain  |
+# | smaller  | small     | taller  | tall   |
+# | mafia    | italy     | yakuza  | japan  |
+# | facebook | post      | twitter | tweet  |
+# | quick    | quickly   | slow    | slowly |
+
+# ** Discussion/Conclusion
+
+# We observed that word embeddings are a very powerful representation format that capture many details of the meaning of words.
+
+# * Classifiying Noun-Noun Compounds Using Neural Networks and Word Embeddings
+#   :PROPERTIES:
+#   :EXPORT_FILE_NAME: lfd-a5-s3275655-angelo
+#   :EXPORT_DATE: 27-11-2016
+#   :EXPORT_AUTHOR: Angelo Basile - s3275655
+#   :END:
+
+# #+BEGIN_ABSTRACT
+# In English Noun-Noun compounds like /coffee table/ are very productive combinations and correctly predicting their semantic relation (i.e. a table /for/ (drinking) coffee) is not a trivial task. We evaluated our neural model on a dataset of 17509 annotated compounds and we found that it achieved an accuracy of 0.74.
+# #+END_ABSTRACT
+
+# ** Introduction
+
+# Noun-noun compounds have been broadly studied in both theoretical and computational linguistics: in the first part of this paper we will sketch the working principles of neural networks so to allow also readers with no computational background to appreciate the results. Then, we will describe the architecture of our model for the NN-compounds classification task and finally we will discuss the results.
+
+# *** A brief introduction to NN
+
+# A neural network can learn any logical function[fn:3]. Assuming two binary valued inputs, /x_1/ and /x_2/, the network represented in Figure [[fig:net1]] computes the function
+
+# \begin{equation}
+# f(x_1,x_2)=\neg{} x_1
+# \end{equation}
+
+# Table [[tab:truth-net1]] shows the output for every possible value of /x_1/ and /x_2/: since the weight /w_2/ is equal to 0, /x_2/ is ignored. The extra /+1/ node is called a /bias node/.
+
+# #+CAPTION: Network 1
+# #+NAME: fig:net1
+# [[./img/a12.png]]
+
+# #+CAPTION: Truth table for Network 1
+# #+NAME: tab:truth-net1
+# |----+-----+----+-----+----+-----+-----+-----|
+# | x1 | w12 | x2 | w12 | b1 | wb1 |   z | a12 |
+# |----+-----+----+-----+----+-----+-----+-----|
+# |  0 | -20 |  0 |   0 |  1 |  10 |  10 | 1.0 |
+# |  0 | -20 |  1 |   0 |  1 |  10 |  10 | 1.0 |
+# |  1 | -20 |  0 |   0 |  1 |  10 | -10 | 0.0 |
+# |  1 | -20 |  1 |   0 |  1 |  10 | -10 | 0.0 |
+# #+TBLFM: $7=$1*$2+$3*$4+$5*$6::$8='(fround (/ 1 (+ 1 (expt float-e (- $7)))));N
+
+# Each input vector /x/ is multiplied by its respective weight vector /w/ and summed.
+
+# \begin{equation}
+# z=\sum_{i=1}^{n} x_iw_i
+# \end{equation}
+
+# This intermediate linear combination goes through a non-linear function to produce the final output values:
+
+# \begin{equation}
+# z=\sigma(\sum_{i=1}^{n} x_iw_i)
+# \end{equation}
+
+# In this case the non-linear function is the sigmoid:
+
+# \begin{equation}
+# \sigma(z)= \frac{1}{1 + e^{-t}}
+# \end{equation}
+
+# Now, we can take a look at different example: Figure [[fig:net-2]] depicts a network that computes the function:
+
+# \begin{equation}
+# \neg{}(x_1 \Rightarrow x_2)
+# \end{equation}
+
+# #+CAPTION: Network 2
+# #+NAME:   fig:net-2
+# [[./img/a22.png]]
+
+
+# Table [[tab:truth-net2]] shows its output for every possible value of /x/.
+
+# #+CAPTION: Truth table for Network 2
+# #+NAME: tab:truth-net2
+# |----+-----+----+-----+----+-----+-----+-----|
+# | x1 | w22 | x2 | w22 | b1 | wb2 |   z | a22 |
+# |----+-----+----+-----+----+-----+-----+-----|
+# |  0 |  20 |  0 | -20 |  1 | -10 | -10 | 0.0 |
+# |  0 |  20 |  1 | -20 |  1 | -10 | -30 | 0.0 |
+# |  1 |  20 |  0 | -20 |  1 | -10 |  10 | 1.0 |
+# |  1 |  20 |  1 | -20 |  1 | -10 | -10 | 0.0 |
+# #+TBLFM: $7=$1*$2+$3*$4+$5*$6::$8='(fround (/ 1 (+ 1 (expt float-e (- $7)))));N
+
+# Now, if we compare Network 1 against Network 2 and their respective truth tables against each other, we can see that the structure is identical and the output is different: this implies that to some extent the model is all in the weights. The weights here are manually assigned for didactic purposes, but these are what the algorithm learns.
+
+# One more example: the logical /OR/ function. Again, Figure [[fig:net-3]] shows a network with 2 input nodes, 1 bias node and 1 neuron; Table [[tab:truth-net3]] exposes the calculations involved.
+
+# #+CAPTION: Network 3
+# #+NAME:   fig:net-3
+# [[./img/a13.png]]
+
+# #+CAPTION: Truth table for Network 3
+# #+NAME: tab:truth-net3
+# |----+-----+----+-----+----+------+-----+-----|
+# | x1 | w13 | x2 | w13 | b1 | wb13 |   z | a13 |
+# |----+-----+----+-----+----+------+-----+-----|
+# |  0 |  20 |  0 |  20 |  1 |  -10 | -10 | 0.0 |
+# |  0 |  20 |  1 |  20 |  1 |  -10 |  10 | 1.0 |
+# |  1 |  20 |  0 |  20 |  1 |  -10 |  10 | 1.0 |
+# |  1 |  20 |  1 |  20 |  1 |  -10 |  30 | 1.0 |
+# #+TBLFM: $7=$1*$2+$3*$4+$5*$6::$8='(fround (/ 1 (+ 1 (expt float-e (- $7)))));N
+
+# All these three networks described until here can be stacked together to compute a more complex function: Figure [[fig:net-4]] depicts a possible combination.
+
+# #+CAPTION: Network 4
+# #+NAME:   fig:net-4
+# [[./img/full.png]]
+
+# This network computes the function:
+
+# \begin{equation}
+# f(x_1,x_2)=\neg{} (x_1 \land x_2)
+# \end{equation}
+
+# Table [[tab:not-and]] shows describes all the calculations.
+
+# #+CAPTION: Truth table of Network 4
+# #+NAME: tab:not-and
+# #+ATTR_LaTeX: :float multicolumn
+# |----+-----+-----+----+-----+-----+----+-----+-----+-----+-----+-----+-----+----+------+-----|
+# | x1 | w12 | w22 | x2 | w12 | w22 | b1 | wb1 | wb2 | a12 | w13 | a22 | w13 | b1 | wb13 | a13 |
+# |----+-----+-----+----+-----+-----+----+-----+-----+-----+-----+-----+-----+----+------+-----|
+# |  0 | -20 |  20 |  0 |   0 | -20 |  1 |  10 | -10 | 1.0 |  20 | 0.0 |  20 |  1 |  -10 | 1.0 |
+# |  0 | -20 |  20 |  1 |   0 | -20 |  1 |  10 | -10 | 1.0 |  20 | 0.0 |  20 |  1 |  -10 | 1.0 |
+# |  1 | -20 |  20 |  0 |   0 | -20 |  1 |  10 | -10 | 0.0 |  20 | 1.0 |  20 |  1 |  -10 | 1.0 |
+# |  1 | -20 |  20 |  1 |   0 | -20 |  1 |  10 | -10 | 0.0 |  20 | 0.0 |  20 |  1 |  -10 | 0.0 |
+
+# # #+TBLFM: $10=$1*$2+$4*$5+$7*$8::$12=$1*$3+$4*$6+$7*$9::$16=$10*$11+$12*$13+$14*$15
+
+# So far we described how a single neuron works; how similar networks can compute different functions by using different weights; how multiple neurons can be composed to compute more complex functions. We want to stress one last thing: the importance of the activation function.
+
+# In all these examples here we used the sigmoid function as the activation function: this function makes weak inputs weaker and strong inputs stronger. Other different functions can be used: we want to mention at least one, the rectified linear unit (ReLu). This function can be approximated by the following analytical solution:
+
+# \begin{equation}
+# f(x) = \ln(1 + e^x)
+# \end{equation}
+
+# This function activates only on positive input: this means that it can be used to automatically select informative features. Compare Table [[tab:truth-relu]] with Table  [[tab:truth-net1]]: they both represent Network 1, but the first one uses a rectified unit whereas the second uses a logistic sigmoid function.
+
+# #+CAPTION: Truth table for Network 1 using ReLu
+# #+NAME: tab:truth-relu
+# #+ATTR_LaTeX: :float multicolumn
+# |----+-----+----+-----+----+-----+-----+------------------------+---------------|
+# | x1 | w12 | x2 | w12 | b1 | wb1 |   z |             a12(ReLu)) | a12 (rounded) |
+# |----+-----+----+-----+----+-----+-----+------------------------+---------------|
+# |  0 | -20 |  0 |   0 |  1 |  10 |  10 |     10.000045398899216 |          10.0 |
+# |  0 | -20 |  1 |   0 |  1 |  10 |  10 |     10.000045398899216 |          10.0 |
+# |  1 | -20 |  0 |   0 |  1 |  10 | -10 | 4.5398899216870535e-05 |           0.0 |
+# |  1 | -20 |  1 |   0 |  1 |  10 | -10 | 4.5398899216870535e-05 |           0.0 |
+# #+TBLFM: $7=$1*$2+$3*$4+$5*$6::$8='(log (+ 1 (expt float-e $7)) float-e);N::$9='(fround $8);N
+
+# ** Data
+
+# The dataset for the Noun-Noun compound classification task is the one described in cite:tratz2010taxonomy. It consists of 17509 annotated instances. We used 80% for training and the rest for testing. We used word embeddings to represent the data.
+
+# ** Method
+
+# We used a multi-layer (2) network with a large number of nodes (2000) and a batch size of 5, trained for 100 epochs: Figure [[fig:model]] depicts the structure of the network. 
+
+# #+CAPTION: Our multi-layer model
+# #+NAME:   fig:model
+# [[./img/model.png]]
+
+# We used the ReLu activation function for the first hidden layer and the softmax for the second one: compared to the softmax activation, the ReLu allows the system to achieve the same performance while reducing by 50% the training epochs. We tried different optimizers: they all provided similar results but with a very different impact on the training time: we found the SGD to be the fastest one to use in training. We included a dropout function: this allowed the system to reduce by 5% the drop in performances from the development set to the final test set, thus significantly reducing overfitting. For the implementation we used the cite:chollet2015keras  framework.
+
+# ** Results
+
+# Our system achieved a 0.74 % accuracy on the development set. 
+
+# ** Discussion/Conclusion
+
+# We explained how a neural network works and how different activation functions contribute to the calculations. Then, we described the architecture of our model and its results. We achieved good results but the process required a massive computational power compared to non-neural models: it took almost 31 minutes the train our final model.
+
+# \bibliographystyle{eacl2017}
+# \bibliography{mybib.bib}
+
+# * Footnotes
+
+# [fn:1] Polysemous words have multiple related senses: /book/ can mean the content or to the physical object: /I read a book/; /I left the book on the table/. Homonymic words instead are words that only share the same form: /set/ as /establish something/ shares the same form with /set/ as collection of objects.
+
+# [fn:2] F1-score for =ORG=: 0.72; F1 score for =PERSON=: 0.76
+
+# [fn:3] See cite:siegelmann1992computational.
+
+
+# \printbibliography

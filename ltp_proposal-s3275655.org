@@ -1,0 +1,17 @@
+#+TITLE: ltp_proposal-s3275655-[looking for title]
+#+DATE: <2017-04-30 dom>
+#+AUTHOR: Angelo Basile
+#+EMAIL: a.basile@student.rug.nl
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:comment d:(not "LOGBOOK") date:t
+#+OPTIONS: e:t email:nil f:t inline:t num:t p:nil pri:nil stat:t
+#+OPTIONS: tags:t tasks:t tex:t timestamp:t toc:t todo:t |:t
+#+CREATOR: Emacs 25.2.1 (Org mode 8.2.10)
+#+DESCRIPTION:
+#+EXCLUDE_TAGS: noexport
+#+KEYWORDS: personality prediction, neural network, twitter, myers-briggs
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+
+* Proposal
+
